@@ -1,0 +1,39 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c100000\c100000\c100000;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 import requests\
+from datetime import datetime\
+\
+ACCESS_TOKEN = "
+\f1\fs28 \cb2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 45b03170ba99b0bd7308e68bc4c6eaa38f658e28
+\f0\fs24 \cb1 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 "\
+ATHLETE_ID = "188086612"\
+\
+def get_total_miles(year=2025):\
+    headers = \{"Authorization": f"Bearer \{ACCESS_TOKEN\}"\}\
+    after = int(datetime(year, 1, 1).timestamp())\
+    total_meters = 0\
+    page = 1\
+\
+    while True:\
+        url = f"https://www.strava.com/api/v3/athlete/activities?after=\{after\}&per_page=200&page=\{page\}"\
+        response = requests.get(url, headers=headers)\
+        activities = response.json()\
+        if not activities:\
+            break\
+        for activity in activities:\
+            if activity["type"] == "Run":\
+                total_meters += activity["distance"]\
+        page += 1\
+\
+    total_miles = total_meters / 1609.34\
+    return round(total_miles, 2)\
+\
+if __name__ == "__main__":\
+    print(get_total_miles())\
+}
